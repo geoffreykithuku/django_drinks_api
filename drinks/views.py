@@ -42,7 +42,7 @@ def drink_detail(request, id):
         # return the serialized drink
         return JsonResponse(serializer.data, status=200)
    
-    if request.method == 'PUT':
+    elif request.method == 'PUT':
         # update the drink object
         serializer = DrinkSerializer(drink, data=request.data)
 
@@ -55,3 +55,9 @@ def drink_detail(request, id):
         #invalid data
         else:
             return JsonResponse(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        # delete the drink
+        drink.delete()
+
+        # return a success message
+        return JsonResponse({'message': 'Drink was deleted successfully!'}, status=204)
