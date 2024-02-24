@@ -32,8 +32,9 @@ def drink_list(request):
 def drink_detail(request, id):
 
     # get a specific drink
+    drink = get_object_or_404(Drink, pk=id)
+
     if request.method == 'GET':
-        drink = get_object_or_404(Drink, pk=id)
 
         # serialize the drink
         serializer = DrinkSerializer(drink)
@@ -41,4 +42,16 @@ def drink_detail(request, id):
         # return the serialized drink
         return JsonResponse(serializer.data, status=200)
    
-        
+    if request.method == 'PUT':
+        # update the drink object
+        serializer = DrinkSerializer(drink, data=request.data)
+
+        # if the data is valid, save it to the database
+        if serializer.is_valid():
+            serializer.save()
+
+            # return the serialized data as json
+            return JsonResponse(serializer.data, status=200)
+        #invalid data
+        else:
+            return JsonResponse(serializer.errors, status=400)
