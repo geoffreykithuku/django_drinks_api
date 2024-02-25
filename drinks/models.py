@@ -1,4 +1,6 @@
+
 from django.db import models
+
 
 # Create your models here.
 
@@ -8,3 +10,4 @@ class Drink(models.Model):
 
     def __str__(self) -> str:
         return self.name + ' ' + self.description
+
