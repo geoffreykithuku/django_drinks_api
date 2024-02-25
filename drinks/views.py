@@ -2,9 +2,11 @@ from django.shortcuts import render, get_object_or_404
 from .models import Drink
 from .serializers import DrinkSerializer, UserSerializer
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
+
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 
@@ -12,6 +14,8 @@ from django.contrib.auth.models import User
 # Create your views here.
 
 @api_view(['GET', 'POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def drink_list(request):
     if request.method == 'GET':
         # get all drinks
@@ -35,6 +39,8 @@ def drink_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def drink_detail(request, id):
     # get a specific drink
     drink = get_object_or_404(Drink, pk=id)
@@ -68,7 +74,6 @@ def drink_detail(request, id):
         return JsonResponse({'message': 'Drink was deleted successfully!'}, status=204)
 
 
-
 @api_view(['POST'])
 def signup(request):
     # create a new user object from the request data
@@ -92,7 +97,7 @@ def signup(request):
         return Response({'token': token.key, 'user': serializer.data}, status=201)
     else:
         return Response(serializer.errors, status=400)
-    
+
 
 @api_view(['POST'])
 def signin(request):
@@ -100,10 +105,18 @@ def signin(request):
 
     if not user.check_password(request.data['password']):
         return Response({'message': 'Invalid credentials'}, status=400)
-    token = Token.objects.get_or_create(user=user)
+    token, _ = Token.objects.get_or_create(user=user)
 
     serializer = UserSerializer(instance=user)
-    return Response({'token': token.key, 'user':serializer.data }, status=200)
+    return Response({'token': token.key, 'user': serializer.data}, status=200)
+
 
 def signout(request):
     pass
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def verify_token(request):
+    return Response("passed for {}".format(request.user.email))
