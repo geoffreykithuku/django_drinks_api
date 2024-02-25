@@ -6,3 +6,4 @@ admin.site.register(Drink)
 admin.site.site_header = 'Drinks Admin Portal'
 
 admin.site.index_title = 'Welcome to Drinks Dashboard'
+
