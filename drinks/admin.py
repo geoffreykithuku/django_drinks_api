@@ -11,7 +11,7 @@ admin.site.index_title = 'Welcome to Drinks Dashboard'
 
 # display all fields in the admin   
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'email', 'phone', 'first_name', 'last_name','date_joined']
+    list_display = ['id', 'username', 'email', 'phone', 'first_name', 'last_name', "is_staff",'date_joined']
   
     list_per_page = 10
 
