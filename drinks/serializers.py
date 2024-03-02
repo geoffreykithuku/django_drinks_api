@@ -1,7 +1,7 @@
 
 from rest_framework import serializers
-from .models import Drink
-from django.contrib.auth.models import User
+from .models import Drink, User
+
 
 class DrinkSerializer(serializers.ModelSerializer):
     class Meta:
